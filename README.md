@@ -1,4 +1,4 @@
-# selenium-training-exercise
+# Selenium WebDriver Integrated Framework for Test Automation
 Please follow below guide after importing the project in Eclipse.
 
 ## Set m2 repository proxy (if required)
