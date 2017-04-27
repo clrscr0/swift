@@ -1,7 +1,7 @@
 # selenium-training-exercise
 Please follow below guide after importing the project in Eclipse.
 
-## Set m2 repository proxy
+## Set m2 repository proxy (if required)
 1. Go to m2 repository location in C:\\Users\\{user}\\.m2
 2. Download <a href="settings.xml">settings.xml</a> and paste on this location.
 
