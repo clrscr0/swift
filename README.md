@@ -1,4 +1,11 @@
 # Selenium WebDriver Integrated Framework for Test Automation
+
+### This framework uses:
+* Selenium 3
+* JDK
+* Maven
+* Cucumber
+
 Please follow below guide after importing the project in Eclipse.
 
 ## Set m2 repository proxy (if required)
