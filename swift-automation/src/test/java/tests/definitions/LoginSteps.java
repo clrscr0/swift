@@ -25,7 +25,7 @@ public class LoginSteps {
 	@Given("^that the user opens the website in \"([^\"]*)\"$")
 	public void that_the_user_opens_the_website(String browser) throws Throwable {
 		log.debug("Logging in...");
-		driver = seleniumUtil.setUp(browser);
+		driver = seleniumUtil.setup(browser);
 		seleniumUtil.launchBrowser(driver);
 
 		loginPage = PageFactory.initElements(driver, LoginPage.class);
