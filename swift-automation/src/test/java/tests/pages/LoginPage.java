@@ -45,9 +45,6 @@ public class LoginPage extends BasePage {
 	
 	public BasePage clickLogin() {	
 		loginButton.click();
-		
-		// below is quickfix for implicit wait issue with geckodriver (not waiting for page to fully load)
-		waitForPageToLoad(driver, 5000);
 
 		if (ProjectConfig.LOGIN_PAGE_TITLE.equals(driver.getTitle())) {
 			log.debug("Login not successful...");
