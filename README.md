@@ -12,16 +12,16 @@ Please follow below guide after importing the project in Eclipse.
 1. Go to m2 repository location in C:\\Users\\{user}\\.m2
 2. Download <a href="settings.xml">settings.xml</a> and paste on this location.
 
-## Install dependencies
-1. Right click on project
-2. Select Run As > Maven install. 
-3. Right click on the project again
-4. Select Run As > Maven clean. This will remove all errors in the project.
-
 ## Eclipse setup
 1. Make sure you have an updated copy of the repository by pulling all changes from Git
 2. Right-click on project
 3. Select Maven > Update Project
+
+## Install dependencies
+1. Right click on project (on Eclipse)
+2. Select Run As > Maven install. 
+3. Right click on the project again
+4. Select Run As > Maven clean. This will remove all errors in the project.
 
 ## Final checks
 1. Go to src\test\java
