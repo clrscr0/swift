@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.openqa.selenium.By;
+import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.TakesScreenshot;
@@ -163,15 +163,6 @@ public class SeleniumUtility {
 		}
 	}
 
-	public boolean isElementPresent(WebDriver driver, By by) {
-		try {
-			driver.findElement(by);
-			return true;
-		} catch (NoSuchElementException e) {
-			return false;
-		}
-	}
-
 	public boolean isTextPresent(WebDriver driver, String text) {
 		String findBy = PropsLoader.getBaseConfigProperty("body_findHow");
 		String findValue = PropsLoader.getBaseConfigProperty("body_findValue");
@@ -225,6 +216,40 @@ public class SeleniumUtility {
 
 		public static Browser parse(String browser) {
 			return Browser.valueOf(browser.trim().toUpperCase());
+		}
+	}
+	
+	public WebElement findElementInFrames(WebDriver driver, By locator) {
+		List<WebElement> frames = driver.findElements(By.tagName("iframe"));
+		
+		for (WebElement frame : frames) {
+			driver.switchTo().frame(frame);
+			
+			if(isElementPresent(driver,locator)) return driver.findElement(locator);
+			
+			List<WebElement> innerFrames = driver.findElements(By.tagName("iframe"));
+			
+			for (WebElement innerFrame : innerFrames) {
+				driver.switchTo().frame(innerFrame);
+				
+				if(isElementPresent(driver,locator)) return driver.findElement(locator);
+				driver.switchTo().parentFrame();
+			}
+			
+			driver.switchTo().parentFrame();
+		}
+	
+		return null;
+	}
+
+	public boolean isElementPresent(WebDriver driver, By locator) {
+		try {
+			driver.findElement(locator);
+			log.debug(locator.toString() + " is present.");
+			return true;
+		} catch (NoSuchElementException e) {
+			log.debug(e.getMessage());
+			return false;
 		}
 	}
 }
