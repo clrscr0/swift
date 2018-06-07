@@ -1,4 +1,4 @@
-#Author: clarissa.c.ortiaga@hpe.com
+#Author: clarissa.ortiaga@gmail.com
 Feature: Login Scenario
 
   Scenario Outline: Login on the Mercury Tours website
