@@ -5,6 +5,7 @@
 * JDK
 * Maven
 * Cucumber
+* JUnit
 
 Please follow below guide after importing the project in Eclipse.
 
