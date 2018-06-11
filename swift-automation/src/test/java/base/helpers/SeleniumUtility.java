@@ -37,13 +37,17 @@ public class SeleniumUtility {
 	private static InternetExplorerOptions ieOptions = null;
 	private static final Logger log = Logger.getLogger(SeleniumUtility.class);
 	
+	private WebDriver driver = null;
+
+	public SeleniumUtility() {}
+	
 	public WebDriver setup(String browser) throws MalformedURLException {
 		return setup(browser, "", "", "");
 	}
 
 	public WebDriver setup(String browser, String ip, String platform, String browserVersion)
 			throws MalformedURLException {
-		WebDriver driver = null;
+		//WebDriver driver = null;
 		log.debug("Setting up webdriver...");
 		
 		if (browser.isEmpty())
@@ -105,7 +109,8 @@ public class SeleniumUtility {
 		case CHROME:
 			//capability = DesiredCapabilities.chrome();
 			chromeOptions = new ChromeOptions();
-			//chromeOptions.setCapability("capability_name", "capability_value");
+			chromeOptions.addArguments("--start-maximized");
+			// chromeOptions.setCapability("capability_name", "capability_value");
 			break;
 		case SAFARI:
 			capability = DesiredCapabilities.safari();
@@ -162,6 +167,71 @@ public class SeleniumUtility {
 			throw new NoSuchElementException("Cannot locate radion button: " + indexNumber);
 		}
 	}
+	
+	public void switchToFrameWhereElementPresent(WebDriver driver, By locator) {
+		driver.switchTo().defaultContent();
+		List<WebElement> frames = driver.findElements(By.tagName("iframe"));
+		log.debug("Frames: " + frames.size());
+
+		for (WebElement frame : frames) {
+			driver.switchTo().frame(frame);
+
+			if (isElementPresent(driver, locator))
+				return;
+
+			List<WebElement> innerFrames = driver.findElements(By.tagName("iframe"));
+			log.debug("Inner Frames: " + innerFrames.size());
+
+			for (WebElement innerFrame : innerFrames) {
+				driver.switchTo().frame(innerFrame);
+
+				if (isElementPresent(driver, locator))
+					return;
+				driver.switchTo().parentFrame();
+			}
+
+			driver.switchTo().parentFrame();
+		}
+	}
+
+	public WebElement findElementInFrames(WebDriver driver, By locator) {
+		driver.switchTo().defaultContent();
+		List<WebElement> frames = driver.findElements(By.tagName("iframe"));
+		log.debug("Frames: " + frames.size());
+
+		for (WebElement frame : frames) {
+			driver.switchTo().frame(frame);
+
+			if (isElementPresent(driver, locator))
+				return driver.findElement(locator);
+
+			List<WebElement> innerFrames = driver.findElements(By.tagName("iframe"));
+			log.debug("Inner Frames: " + innerFrames.size());
+
+			for (WebElement innerFrame : innerFrames) {
+				driver.switchTo().frame(innerFrame);
+
+				if (isElementPresent(driver, locator))
+					return driver.findElement(locator);
+				driver.switchTo().parentFrame();
+			}
+
+			driver.switchTo().parentFrame();
+		}
+
+		return null;
+	}
+
+	public boolean isElementPresent(WebDriver driver, By locator) {
+		try {
+			driver.findElement(locator);
+			log.debug(locator.toString() + " is present.");
+			return true;
+		} catch (NoSuchElementException e) {
+			// log.debug(e.getMessage());
+			return false;
+		}
+	}
 
 	public boolean isTextPresent(WebDriver driver, String text) {
 		String findBy = PropsLoader.getBaseConfigProperty("body_findHow");
@@ -216,40 +286,6 @@ public class SeleniumUtility {
 
 		public static Browser parse(String browser) {
 			return Browser.valueOf(browser.trim().toUpperCase());
-		}
-	}
-	
-	public WebElement findElementInFrames(WebDriver driver, By locator) {
-		List<WebElement> frames = driver.findElements(By.tagName("iframe"));
-		
-		for (WebElement frame : frames) {
-			driver.switchTo().frame(frame);
-			
-			if(isElementPresent(driver,locator)) return driver.findElement(locator);
-			
-			List<WebElement> innerFrames = driver.findElements(By.tagName("iframe"));
-			
-			for (WebElement innerFrame : innerFrames) {
-				driver.switchTo().frame(innerFrame);
-				
-				if(isElementPresent(driver,locator)) return driver.findElement(locator);
-				driver.switchTo().parentFrame();
-			}
-			
-			driver.switchTo().parentFrame();
-		}
-	
-		return null;
-	}
-
-	public boolean isElementPresent(WebDriver driver, By locator) {
-		try {
-			driver.findElement(locator);
-			log.debug(locator.toString() + " is present.");
-			return true;
-		} catch (NoSuchElementException e) {
-			log.debug(e.getMessage());
-			return false;
 		}
 	}
 }
