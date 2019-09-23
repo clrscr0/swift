@@ -16,42 +16,48 @@ import tests.dto.User;
 public class LoginPage extends BasePage {
 	static final Logger log = Logger.getLogger(LoginPage.class);
 
-	@FindBy(how = How.NAME, using = "userName")
+	@FindBy(how = How.NAME, using = "login")
 	private WebElement userNameTextField;
 
 	@FindBy(how = How.NAME, using = "password")
 	private WebElement passwordTextField;
 
-	@FindBy(how = How.NAME, using = "login")
+	@FindBy(how = How.CSS, using = "input[alt=Login]")
 	private WebElement loginButton;
+
+	public WebElement loginErrorMsg;
 
 	public LoginPage(WebDriver driver) {
 		super(driver);
 	}
-	
-	public LoginPage setUsername(User user) {
+
+	public MarketNewsPage loginValid(User user) {
+		log.debug("Logging in...");
 		userNameTextField.clear();
 		userNameTextField.sendKeys(user.getUsername());
-	
-		return this;
-	}
-	
-	public LoginPage setPassword(User user) {
 		passwordTextField.clear();
 		passwordTextField.sendKeys(user.getPassword());
-	
-		return this;
-	}
-	
-	public BasePage clickLogin() {	
 		loginButton.click();
 
+		return PageFactory.initElements(driver, MarketNewsPage.class);
+
+	}
+	
+	public BasePage login(User user) {
+		log.debug("Logging in...");
+		userNameTextField.clear();
+		userNameTextField.sendKeys(user.getUsername());
+		passwordTextField.clear();
+		passwordTextField.sendKeys(user.getPassword());
+		loginButton.click();
+		
+		// below is quickfix for implicit wait issue with geckodriver (not waiting for page to fully load)
+		waitForPageToLoad(driver, 5000);
+
 		if (ProjectConfig.LOGIN_PAGE_TITLE.equals(driver.getTitle())) {
-			log.debug("Login not successful...");
 			return this;
 		}else{
-			log.debug("Login successful...");
-			return PageFactory.initElements(driver, FindFlightsPage.class);
+			return PageFactory.initElements(driver, MarketNewsPage.class);
 		}
 	}
 }
