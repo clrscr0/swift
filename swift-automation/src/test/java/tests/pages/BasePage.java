@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -21,7 +21,7 @@ import base.models.DataSheet;
 
 public class BasePage {
 	protected WebDriver driver;
-	static final Logger log = Logger.getLogger(BasePage.class);
+	static final Logger log = LogManager.getLogger(BasePage.class);
 
 	public BasePage(WebDriver driver) {
 		this.driver = driver;

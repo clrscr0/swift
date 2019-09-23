@@ -7,7 +7,8 @@ import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
@@ -31,7 +32,7 @@ import tests.constants.ProjectConfig;
 
 public class SeleniumUtility {
 	private static DesiredCapabilities capability = null;
-	private static final Logger log = Logger.getLogger(SeleniumUtility.class);
+	private static final Logger log = LogManager.getLogger(SeleniumUtility.class);
 
 	public WebDriver setUp(String browser, String ip, String platform, String browserVersion)
 			throws MalformedURLException {

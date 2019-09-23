@@ -1,6 +1,7 @@
 package base.controller;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import base.constants.BaseConfig;
 import base.dao.TestIterationDaoImpl;
@@ -10,7 +11,7 @@ import base.models.DataSheet;
 
 public class Controller implements Cloneable {
 	private static Controller controllerInstance = null;
-	static final Logger log = Logger.getLogger(Controller.class);
+	static final Logger log = LogManager.getLogger(Controller.class);
 	private static StringBuffer verificationErrors = new StringBuffer();
 	private static String started;
 

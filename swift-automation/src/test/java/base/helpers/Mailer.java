@@ -17,13 +17,14 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import base.constants.BaseConfig;
 
 public class Mailer {
 	
-	static final Logger log = Logger.getLogger(Mailer.class);
+	static final Logger log = LogManager.getLogger(Mailer.class);
 	
 	public static void sendMail(String mailTo, String subject, String body, String[] attachFiles) throws AddressException, MessagingException{
 		

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.apache.xerces.parsers.DOMParser;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
@@ -13,7 +13,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public class TypeConverter {
-	static final Logger log = Logger.getLogger(TypeConverter.class);
+	static final Logger log = LogManager.getLogger(TypeConverter.class);
 
 	public static String[][] get2DArrayString(ArrayList<String[]> list) {
 		String[][] testData = new String[list.size()][];

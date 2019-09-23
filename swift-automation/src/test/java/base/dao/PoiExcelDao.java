@@ -8,18 +8,21 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.BorderStyle;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Workbook;
 
 public class PoiExcelDao {
-	static final Logger log = Logger.getLogger(PoiExcelDao.class);
+	static final Logger log = LogManager.getLogger(PoiExcelDao.class);
 
 	FileInputStream file = null;
 	private HSSFWorkbook workbook;
@@ -44,7 +47,7 @@ public class PoiExcelDao {
 		Row headerRow = sheet.getRow(0);
 		int columnIndex = -1;
 		for (Cell cell : headerRow) {
-			if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+			if (cell.getCellType() == CellType.STRING) {
 				if (cell.getRichStringCellValue().getString().trim().equals(header)) {
 					columnIndex = cell.getColumnIndex();
 					break;
@@ -108,7 +111,7 @@ public class PoiExcelDao {
 				rowMap.put("row", String.valueOf(rowIndex)); //get rowIndex for reference in writing output
 
 				for (Cell cell : row) {
-					cell.setCellType(Cell.CELL_TYPE_STRING);
+					cell.setCellType(CellType.STRING);
 					String cellHeader = sheet.getRow(0).getCell(cell.getColumnIndex()).toString().trim();
 					rowMap.put(cellHeader, cell.toString());
 				}
@@ -145,7 +148,7 @@ public class PoiExcelDao {
 	public static Row findRow(HSSFSheet sheet, String cellContent) {
 		for (Row row : sheet) {
 			for (Cell cell : row) {
-				if (cell.getCellType() == Cell.CELL_TYPE_STRING) {
+				if (cell.getCellType() == CellType.STRING) {
 					if (cell.getRichStringCellValue().getString().trim().equals(cellContent)) {
 						return row;
 					}
@@ -222,57 +225,57 @@ public class PoiExcelDao {
 			break;
 		case BOLD:
 			font.setFontHeightInPoints((short) 10);
-			font.setBoldweight(Font.BOLDWEIGHT_BOLD);
-			cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
+			font.setBold(true);
+			cellStyle.setBorderBottom(BorderStyle.THIN);
 			cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
 			cellStyle.setFont(font);
 			break;
 		case TOP:
-			cellStyle.setBorderTop(CellStyle.BORDER_THIN);
+			cellStyle.setBorderTop(BorderStyle.THIN);
 			cellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
 			cellStyle.setFont(font);
 			break;
 
 		case RIGHT:
-			cellStyle.setBorderRight(CellStyle.BORDER_THIN);
+			cellStyle.setBorderRight(BorderStyle.THIN);
 			cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
 			cellStyle.setFont(font);
 			break;
 		case BOTTOM:
-			cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
+			cellStyle.setBorderBottom(BorderStyle.THIN);
 			cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
 			cellStyle.setFont(font);
 			break;
 		case LEFT:
-			cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
+			cellStyle.setBorderLeft(BorderStyle.THIN);
 			cellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
 			cellStyle.setFont(font);
 			break;
 		case TOPLEFT:
-			cellStyle.setBorderTop(CellStyle.BORDER_THIN);
+			cellStyle.setBorderTop(BorderStyle.THIN);
 			cellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
-			cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
+			cellStyle.setBorderLeft(BorderStyle.THIN);
 			cellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
 			cellStyle.setFont(font);
 			break;
 		case TOPRIGHT:
-			cellStyle.setBorderTop(CellStyle.BORDER_THIN);
+			cellStyle.setBorderTop(BorderStyle.THIN);
 			cellStyle.setTopBorderColor(IndexedColors.BLACK.getIndex());
-			cellStyle.setBorderRight(CellStyle.BORDER_THIN);
+			cellStyle.setBorderRight(BorderStyle.THIN);
 			cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
 			cellStyle.setFont(font);
 			break;
 		case BOTTOMLEFT:
-			cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
+			cellStyle.setBorderBottom(BorderStyle.THIN);
 			cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-			cellStyle.setBorderLeft(CellStyle.BORDER_THIN);
+			cellStyle.setBorderLeft(BorderStyle.THIN);
 			cellStyle.setLeftBorderColor(IndexedColors.BLACK.getIndex());
 			cellStyle.setFont(font);
 			break;
 		case BOTTOMRIGHT:
-			cellStyle.setBorderBottom(CellStyle.BORDER_THIN);
+			cellStyle.setBorderBottom(BorderStyle.THIN);
 			cellStyle.setBottomBorderColor(IndexedColors.BLACK.getIndex());
-			cellStyle.setBorderRight(CellStyle.BORDER_THIN);
+			cellStyle.setBorderRight(BorderStyle.THIN);
 			cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
 			cellStyle.setFont(font);
 			break;

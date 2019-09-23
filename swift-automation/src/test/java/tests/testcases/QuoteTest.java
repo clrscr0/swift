@@ -2,7 +2,7 @@ package tests.testcases;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Test;
 
@@ -16,7 +16,7 @@ import tests.pages.QuoteViewPage;
 
 public class QuoteTest extends SwiftTestRunner {
 	
-	static final Logger log = Logger.getLogger(QuoteTest.class);
+	static final Logger log = LogManager.getLogger(QuoteTest.class);
 	public static final String MODULE = "testQuote";
 	
 	@Test(dataProviderClass = SwiftDataProvider.class, dataProvider = "datasheet", enabled = true, groups = {"quote"})

@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.testng.IReporter;
 import org.testng.ISuite;
 import org.testng.ISuiteResult;
@@ -18,7 +18,7 @@ import base.models.DataSheet;
 
 public class SwiftReporter implements IReporter, ITestListener {
 
-	private final Logger log = Logger.getLogger(SwiftReporter.class);
+	private final Logger log = LogManager.getLogger(SwiftReporter.class);
 
 	@Override
 	public void generateReport(List<XmlSuite> arg0, List<ISuite> arg1, String arg2) {

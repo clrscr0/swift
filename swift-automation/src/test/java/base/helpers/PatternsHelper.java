@@ -3,10 +3,11 @@ package base.helpers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class PatternsHelper {
-	static final Logger log = Logger.getLogger(PatternsHelper.class);
+	static final Logger log = LogManager.getLogger(PatternsHelper.class);
 
 	public static boolean isValidEmail(String email) {
 		return false;

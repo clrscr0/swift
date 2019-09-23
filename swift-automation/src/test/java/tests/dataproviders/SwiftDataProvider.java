@@ -8,8 +8,7 @@ import java.io.Writer;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 
-import org.apache.log4j.Logger;
-import org.apache.log4j.chainsaw.Main;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 import org.testng.ITestContext;
 import org.testng.annotations.DataProvider;
 
@@ -21,7 +20,7 @@ import com.google.gson.stream.JsonReader;
 import base.controller.Controller;
 
 public class SwiftDataProvider {
-	static final Logger log = Logger.getLogger(SwiftDataProvider.class);
+	static final Logger log = LogManager.getLogger(SwiftDataProvider.class);
 
 	@DataProvider(name = "datasheet")
 	public static Object[][] getExcelData(Method m, ITestContext c) throws Exception {

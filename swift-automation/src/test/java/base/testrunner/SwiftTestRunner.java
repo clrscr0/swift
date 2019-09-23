@@ -9,7 +9,8 @@ import java.util.concurrent.TimeUnit;
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.PageFactory;
@@ -37,7 +38,7 @@ public class SwiftTestRunner{
 	public WebDriver driver;
 	protected SoftAssert softAssert = new SoftAssert();
 	protected SeleniumUtility seleniumUtil = new SeleniumUtility();
-	private final Logger log = Logger.getLogger(SwiftTestRunner.class);	
+	private final Logger log = LogManager.getLogger(SwiftTestRunner.class);	
 	public DataSheet datasheet;
 	
 	@Parameters({ "browser", "ip", "platform", "version" })

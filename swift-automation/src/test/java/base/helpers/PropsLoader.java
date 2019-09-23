@@ -6,10 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Properties;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
 
 public class PropsLoader {
-	static final Logger log = Logger.getLogger(PropsLoader.class);
+	static final Logger log = LogManager.getLogger(PropsLoader.class);
 	private final static String CONFIGFILE = "src/test/resources/config.properties";
 	private static Properties CONFIGPROP = null;
 	private final static String PROJECTFILE = "src/test/resources/project.properties";
