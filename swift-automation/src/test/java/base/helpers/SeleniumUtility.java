@@ -3,6 +3,7 @@ package base.helpers;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
@@ -15,41 +16,29 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.edge.EdgeDriver;
-import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
-import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.safari.SafariDriver;
+import org.testng.AssertJUnit;
 
 import base.constants.BaseConfig;
+import base.controller.Controller;
 import tests.constants.ProjectConfig;
 
 public class SeleniumUtility {
 	private static DesiredCapabilities capability = null;
-	private static FirefoxOptions firefoxOptions = null;
-	private static ChromeOptions chromeOptions = null;
-	private static EdgeOptions edgeOptions = null;
-	private static InternetExplorerOptions ieOptions = null;
 	private static final Logger log = Logger.getLogger(SeleniumUtility.class);
-	
-	private WebDriver driver = null;
 
-	public SeleniumUtility() {}
-	
-	public WebDriver setup(String browser) throws MalformedURLException {
-		return setup(browser, "", "", "");
-	}
-
-	public WebDriver setup(String browser, String ip, String platform, String browserVersion)
+	public WebDriver setUp(String browser, String ip, String platform, String browserVersion)
 			throws MalformedURLException {
-		//WebDriver driver = null;
+		WebDriver driver = null;
 		log.debug("Setting up webdriver...");
-		
+		log.debug("Run on Grid: " + BaseConfig.EXECUTION_RUN_ON_GRID);
+
 		if (browser.isEmpty())
 			browser = BaseConfig.EXECUTION_BROWSER_TYPE;
 		Browser _browser = Browser.parse(browser);
@@ -63,8 +52,11 @@ public class SeleniumUtility {
 
 		setCapabilities(_browser, _platform, browserVersion);
 
-		driver = getWebDriver(browser);
-		
+		if (BaseConfig.EXECUTION_RUN_ON_GRID) {
+			driver = getRemoteWebDriver(ip);
+		} else {
+			driver = getWebDriver(browser);
+		}
 		return driver;
 	}
 
@@ -85,32 +77,17 @@ public class SeleniumUtility {
 	public void setCapabilities(Browser browserType, Platform platform, String version) {
 		switch (browserType) {
 		case FIREFOX:
-			//capability = DesiredCapabilities.firefox();
-			firefoxOptions = new FirefoxOptions();
-		    firefoxOptions.setCapability("marionette", true);
-			//capability.setCapability("marionette", true);
-			break;
-		case EDGE:
-			edgeOptions = new EdgeOptions();
-			edgeOptions.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
-			edgeOptions.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
+			capability = DesiredCapabilities.firefox();
+			capability.setCapability("marionette", true);
 			break;
 		case IEXPLORE:
-			/*capability = DesiredCapabilities.internetExplorer();
+			capability = DesiredCapabilities.internetExplorer();
 			capability.setCapability(CapabilityType.BROWSER_NAME, "IE");
 			capability.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
-			capability.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);*/
-			
-			ieOptions = new InternetExplorerOptions();
-			ieOptions.setCapability(CapabilityType.BROWSER_NAME, "IE");
-			ieOptions.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
-			ieOptions.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
+			capability.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
 			break;
 		case CHROME:
-			//capability = DesiredCapabilities.chrome();
-			chromeOptions = new ChromeOptions();
-			chromeOptions.addArguments("--start-maximized");
-			// chromeOptions.setCapability("capability_name", "capability_value");
+			capability = DesiredCapabilities.chrome();
 			break;
 		case SAFARI:
 			capability = DesiredCapabilities.safari();
@@ -118,9 +95,15 @@ public class SeleniumUtility {
 		default:
 			throw new RuntimeException("Browser type unsupported");
 		}
-		/*capability.setBrowserName(browserType.value);
+		capability.setBrowserName(browserType.value);
 		if(platform!=null) capability.setPlatform(platform);
-		if(version!=null) capability.setVersion(version);*/
+		if(version!=null) capability.setVersion(version);
+	}
+
+	private RemoteWebDriver getRemoteWebDriver(String ip) throws MalformedURLException {
+		if (ip.isEmpty())
+			ip = BaseConfig.EXECUTION_GRID_HUB_URL;
+		return new RemoteWebDriver(new URL(ip), capability);
 	}
 
 	public WebDriver getWebDriver(String browser) {
@@ -130,21 +113,17 @@ public class SeleniumUtility {
 		switch (_browser) {
 		case FIREFOX:
 			System.setProperty("webdriver.gecko.driver", "src/test/resources/drivers/geckodriver.exe");
-			return new FirefoxDriver(firefoxOptions);
+			return new FirefoxDriver(capability);
 		case IEXPLORE:
 			System.setProperty("webdriver.ie.driver", "src/test/resources/drivers/IEDriverServer.exe");
-			return new InternetExplorerDriver(ieOptions);
-		case EDGE:
-			System.setProperty("webdriver.edge.driver", "src/test/resources/drivers/MicrosoftWebDriver.exe");
-			return new EdgeDriver(edgeOptions);
+			return new InternetExplorerDriver(capability);
 		case CHROME:
 			System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver.exe");
-			return new ChromeDriver(chromeOptions);
+			return new ChromeDriver(capability);
 		case HTMLUNIT:
 			return new HtmlUnitDriver(capability);
-		/*case OPERA:
-			System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/operadriver.exe");
-			return new OperaDriver(capability);*/
+		case SAFARI:
+			return new SafariDriver(capability);
 		default:
 			throw new RuntimeException("Browser type unsupported");
 		}
@@ -167,68 +146,12 @@ public class SeleniumUtility {
 			throw new NoSuchElementException("Cannot locate radion button: " + indexNumber);
 		}
 	}
-	
-	public void switchToFrameWhereElementPresent(WebDriver driver, By locator) {
-		driver.switchTo().defaultContent();
-		List<WebElement> frames = driver.findElements(By.tagName("iframe"));
-		log.debug("Frames: " + frames.size());
 
-		for (WebElement frame : frames) {
-			driver.switchTo().frame(frame);
-
-			if (isElementPresent(driver, locator))
-				return;
-
-			List<WebElement> innerFrames = driver.findElements(By.tagName("iframe"));
-			log.debug("Inner Frames: " + innerFrames.size());
-
-			for (WebElement innerFrame : innerFrames) {
-				driver.switchTo().frame(innerFrame);
-
-				if (isElementPresent(driver, locator))
-					return;
-				driver.switchTo().parentFrame();
-			}
-
-			driver.switchTo().parentFrame();
-		}
-	}
-
-	public WebElement findElementInFrames(WebDriver driver, By locator) {
-		driver.switchTo().defaultContent();
-		List<WebElement> frames = driver.findElements(By.tagName("iframe"));
-		log.debug("Frames: " + frames.size());
-
-		for (WebElement frame : frames) {
-			driver.switchTo().frame(frame);
-
-			if (isElementPresent(driver, locator))
-				return driver.findElement(locator);
-
-			List<WebElement> innerFrames = driver.findElements(By.tagName("iframe"));
-			log.debug("Inner Frames: " + innerFrames.size());
-
-			for (WebElement innerFrame : innerFrames) {
-				driver.switchTo().frame(innerFrame);
-
-				if (isElementPresent(driver, locator))
-					return driver.findElement(locator);
-				driver.switchTo().parentFrame();
-			}
-
-			driver.switchTo().parentFrame();
-		}
-
-		return null;
-	}
-
-	public boolean isElementPresent(WebDriver driver, By locator) {
+	public boolean isElementPresent(WebDriver driver, By by) {
 		try {
-			driver.findElement(locator);
-			log.debug(locator.toString() + " is present.");
+			driver.findElement(by);
 			return true;
 		} catch (NoSuchElementException e) {
-			// log.debug(e.getMessage());
 			return false;
 		}
 	}
@@ -241,6 +164,15 @@ public class SeleniumUtility {
 			return true;
 		} else {
 			return false;
+		}
+	}
+
+	public void verifyErrors() {
+		Controller controller = Controller.getController();
+		String verificationErrorString = controller.getVerificationErrors().toString();
+		if (!"".equals(verificationErrorString)) {
+			log.debug(verificationErrorString);
+			AssertJUnit.fail(verificationErrorString);
 		}
 	}
 
@@ -276,7 +208,7 @@ public class SeleniumUtility {
 	}
 
 	public static enum Browser {
-		FIREFOX("firefox"), IEXPLORE("internet explorer"), CHROME("chrome"), HTMLUNIT("htmlunit"), SAFARI("safari"), EDGE("edge"), OPERA("opera");
+		FIREFOX("firefox"), IEXPLORE("internet explorer"), CHROME("chrome"), HTMLUNIT("htmlunit"), SAFARI("safari");
 
 		public String value;
 
