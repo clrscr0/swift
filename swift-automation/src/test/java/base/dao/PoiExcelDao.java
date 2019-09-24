@@ -111,7 +111,7 @@ public class PoiExcelDao {
 				rowMap.put("row", String.valueOf(rowIndex)); //get rowIndex for reference in writing output
 
 				for (Cell cell : row) {
-					cell.setCellType(CellType.STRING);
+					//cell.setCellType(CellType.STRING);
 					String cellHeader = sheet.getRow(0).getCell(cell.getColumnIndex()).toString().trim();
 					rowMap.put(cellHeader, cell.toString());
 				}
@@ -278,6 +278,8 @@ public class PoiExcelDao {
 			cellStyle.setBorderRight(BorderStyle.THIN);
 			cellStyle.setRightBorderColor(IndexedColors.BLACK.getIndex());
 			cellStyle.setFont(font);
+			break;
+		default:
 			break;
 		}
 

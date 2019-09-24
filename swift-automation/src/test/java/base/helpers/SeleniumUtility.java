@@ -17,13 +17,19 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.edge.EdgeDriver;
+import org.openqa.selenium.edge.EdgeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 import org.testng.AssertJUnit;
 
 import base.constants.BaseConfig;
@@ -46,7 +52,7 @@ public class SeleniumUtility {
 
 		if (platform.isEmpty())
 			platform = BaseConfig.EXECUTION_PLATFORM_TYPE;
-		Platform _platform = Platform.extractFromSysProperty(platform);
+		Platform _platform = Platform.fromString(platform);
 
 		if (browserVersion.isEmpty())
 			browserVersion = BaseConfig.EXECUTION_BROWSER_VERSION;
@@ -70,7 +76,7 @@ public class SeleniumUtility {
 	public void tearDown(WebDriver driver) {
 		log.debug("Closing up webdriver...");
 		if (driver != null) {
-			//driver.close();
+			// driver.close();
 			driver.quit();
 		}
 	}
@@ -79,12 +85,13 @@ public class SeleniumUtility {
 		switch (browserType) {
 		case FIREFOX:
 			capability = DesiredCapabilities.firefox();
-			capability.setCapability("marionette", true);
+			capability.setCapability("marionette", true); // marionette may not be directly compatible with the
+															// Selenium/WebDriver protocol
 			break;
 		case IEXPLORE:
 			capability = DesiredCapabilities.internetExplorer();
 			capability.setCapability(CapabilityType.BROWSER_NAME, "IE");
-			capability.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
+			capability.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS, true);
 			capability.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
 			break;
 		case CHROME:
@@ -97,8 +104,12 @@ public class SeleniumUtility {
 			throw new RuntimeException("Browser type unsupported");
 		}
 		capability.setBrowserName(browserType.value);
-		if(platform!=null) capability.setPlatform(platform);
-		if(version!=null) capability.setVersion(version);
+		if (platform != null)
+			capability.setPlatform(platform);
+		if (version != null)
+			capability.setVersion(version);
+
+		log.debug(capability.toJson().toString());
 	}
 
 	private RemoteWebDriver getRemoteWebDriver(String ip) throws MalformedURLException {
@@ -114,17 +125,33 @@ public class SeleniumUtility {
 		switch (_browser) {
 		case FIREFOX:
 			System.setProperty("webdriver.gecko.driver", "src/test/resources/drivers/geckodriver.exe");
-			return new FirefoxDriver(capability);
-		case IEXPLORE:
-			System.setProperty("webdriver.ie.driver", "src/test/resources/drivers/IEDriverServer.exe");
-			return new InternetExplorerDriver(capability);
+			FirefoxOptions firefoxOptions = new FirefoxOptions();
+			firefoxOptions.merge(capability);
+			return new FirefoxDriver(firefoxOptions);
+		case IEXPLORE: /*does not open url*/
+			System.setProperty("webdriver.ie.driver", "src/test/resources/drivers/MicrosoftWebDriver.exe");
+			InternetExplorerOptions ieOptions = new InternetExplorerOptions();
+			ieOptions.merge(capability);
+			return new InternetExplorerDriver(ieOptions);
 		case CHROME:
 			System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver.exe");
-			return new ChromeDriver(capability);
+			System.setProperty("webdriver.chrome.logfile", "chromedriver.log");			
+			System.setProperty("webdriver.chrome.verboseLogging", "true");
+
+			ChromeOptions chromeOptions = new ChromeOptions();
+			chromeOptions.merge(capability);
+			return new ChromeDriver();
+		case EDGE: /*does not open browser. driver might be wrong*/
+			System.setProperty("webdriver.edge.driver", "src/test/resources/drivers/msedgedriver.exe");
+			EdgeOptions edgeOptions = new EdgeOptions();
+			edgeOptions.merge(capability);
+			return new EdgeDriver(edgeOptions);
 		case HTMLUNIT:
 			return new HtmlUnitDriver(capability);
-		case SAFARI:
-			return new SafariDriver(capability);
+		case SAFARI: /*not tested, no driver executable*/
+			SafariOptions safariOptions = new SafariOptions();
+			safariOptions.merge(capability);
+			return new SafariDriver(safariOptions);
 		default:
 			throw new RuntimeException("Browser type unsupported");
 		}
@@ -209,7 +236,7 @@ public class SeleniumUtility {
 	}
 
 	public static enum Browser {
-		FIREFOX("firefox"), IEXPLORE("internet explorer"), CHROME("chrome"), HTMLUNIT("htmlunit"), SAFARI("safari");
+		FIREFOX("firefox"), IEXPLORE("internet explorer"), CHROME("chrome"), HTMLUNIT("htmlunit"), SAFARI("safari"), EDGE("edge");
 
 		public String value;
 

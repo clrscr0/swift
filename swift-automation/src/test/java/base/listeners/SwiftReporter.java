@@ -4,7 +4,8 @@ import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.Logger; import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.testng.IReporter;
 import org.testng.ISuite;
 import org.testng.ISuiteResult;
@@ -114,7 +115,7 @@ public class SwiftReporter implements IReporter, ITestListener {
 
 			// get the name and class of the field h.
 			// (this is just for fun)
-			String name = hField.getName();
+			//String name = hField.getName();
 			DataSheet datasheet = (DataSheet) hField.get(testClass);
 			// System.out.print(name + ":" + thisHelperInstance.toString() +
 			// "\n");

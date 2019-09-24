@@ -98,7 +98,7 @@ public static void sendGMail(String mailTo, String subject, String body, String[
         Authenticator auth = new Authenticator() {
             public PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(BaseConfig.REPORT_EMAIL_FROM, BaseConfig.REPORT_EMAIL_PASSWORD);
-            }
+            } 
         };
         Session session = Session.getInstance(properties, auth);
  

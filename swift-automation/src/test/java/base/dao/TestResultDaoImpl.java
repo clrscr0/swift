@@ -7,9 +7,7 @@ import org.testng.ITestResult;
 
 import base.constants.BaseConfig;
 import base.controller.Controller;
-import base.helpers.DateTimeHelper;
 import base.models.DataSheet;
-import tests.constants.ProjectConfig;
 
 public class TestResultDaoImpl extends PoiExcelDao implements BaseDao<String[]> {
 
@@ -57,7 +55,7 @@ public class TestResultDaoImpl extends PoiExcelDao implements BaseDao<String[]> 
 	public void writeSummary(ITestResult testResult) throws IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException{
 		Class<?> c = testResult.getInstance().getClass();
 		DataSheet datasheet = (DataSheet) c.getSuperclass().getDeclaredField("datasheet").get(testResult.getInstance());
-		String iteration = datasheet.get("row");
+		//String iteration = datasheet.get("row");
 		String testName = c.getSimpleName();
 		log.info("test class: " + testName);
 		

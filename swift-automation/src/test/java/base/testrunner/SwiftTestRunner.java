@@ -28,6 +28,7 @@ import org.testng.asserts.SoftAssert;
 
 import base.constants.BaseConfig;
 import base.controller.Controller;
+import base.helpers.Mailer;
 import base.helpers.SeleniumUtility;
 import base.models.DataSheet;
 import base.models.Status;
@@ -94,7 +95,7 @@ public class SwiftTestRunner{
 		String mailTo = ""; //get in BaseConfig
 		String subject = ""; //get in BaseConfig
 		String body = ""; //write summary
-		//Mailer.sendMail(mailTo, subject, body, attachedFiles);
+		Mailer.sendMail(mailTo, subject, body, attachedFiles);
 	}
 
 	private void recordTestRun(ITestResult testResult) throws Exception{

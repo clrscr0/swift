@@ -7,7 +7,6 @@ import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-import base.models.DataSheet;
 import tests.dataproviders.SwiftDataProvider;
 
 @Listeners({ base.listeners.SwiftReporter.class })
