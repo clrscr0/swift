@@ -7,10 +7,11 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class FileHelper {
-	private static final Logger log = Logger.getLogger(FileHelper.class);
+	private static final Logger log = LogManager.getLogger(FileHelper.class);
 	
 	public static int getNumFolders(String folderPath) {
 		int numFolders = 0;

@@ -3,10 +3,12 @@ package base.helpers;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
@@ -25,6 +27,9 @@ import org.openqa.selenium.ie.InternetExplorerDriver;
 import org.openqa.selenium.ie.InternetExplorerOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.safari.SafariDriver;
+import org.openqa.selenium.safari.SafariOptions;
 
 import base.constants.BaseConfig;
 import tests.constants.ProjectConfig;
@@ -35,7 +40,8 @@ public class SeleniumUtility {
 	private static ChromeOptions chromeOptions = null;
 	private static EdgeOptions edgeOptions = null;
 	private static InternetExplorerOptions ieOptions = null;
-	private static final Logger log = Logger.getLogger(SeleniumUtility.class);
+	private static SafariOptions safariOptions = null;
+	private static final Logger log = LogManager.getLogger(SeleniumUtility.class);
 	
 	private WebDriver driver = null;
 
@@ -49,6 +55,7 @@ public class SeleniumUtility {
 			throws MalformedURLException {
 		//WebDriver driver = null;
 		log.debug("Setting up webdriver...");
+		log.debug("Run on Grid: " + BaseConfig.EXECUTION_RUN_ON_GRID);
 		
 		if (browser.isEmpty())
 			browser = BaseConfig.EXECUTION_BROWSER_TYPE;
@@ -56,14 +63,18 @@ public class SeleniumUtility {
 
 		if (platform.isEmpty())
 			platform = BaseConfig.EXECUTION_PLATFORM_TYPE;
-		Platform _platform = Platform.extractFromSysProperty(platform);
+		Platform _platform = Platform.fromString(platform);
 
 		if (browserVersion.isEmpty())
 			browserVersion = BaseConfig.EXECUTION_BROWSER_VERSION;
 
 		setCapabilities(_browser, _platform, browserVersion);
-
-		driver = getWebDriver(browser);
+		
+		if (BaseConfig.EXECUTION_RUN_ON_GRID) {
+			driver = getRemoteWebDriver(ip);
+		} else {
+			driver = getWebDriver(browser);
+		}
 		
 		return driver;
 	}
@@ -83,44 +94,48 @@ public class SeleniumUtility {
 	}
 
 	public void setCapabilities(Browser browserType, Platform platform, String version) {
+		
+		capability.setBrowserName(browserType.value);
+		if(platform!=null) capability.setPlatform(platform);
+		if(version!=null) capability.setVersion(version);
+		
 		switch (browserType) {
 		case FIREFOX:
-			//capability = DesiredCapabilities.firefox();
 			firefoxOptions = new FirefoxOptions();
 		    firefoxOptions.setCapability("marionette", true);
-			//capability.setCapability("marionette", true);
+		    firefoxOptions.merge(capability);
 			break;
 		case EDGE:
 			edgeOptions = new EdgeOptions();
 			edgeOptions.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
 			edgeOptions.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
+			edgeOptions.merge(capability);
 			break;
 		case IEXPLORE:
-			/*capability = DesiredCapabilities.internetExplorer();
-			capability.setCapability(CapabilityType.BROWSER_NAME, "IE");
-			capability.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
-			capability.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);*/
-			
 			ieOptions = new InternetExplorerOptions();
 			ieOptions.setCapability(CapabilityType.BROWSER_NAME, "IE");
 			ieOptions.setCapability(InternetExplorerDriver.INTRODUCE_FLAKINESS_BY_IGNORING_SECURITY_DOMAINS,true);
 			ieOptions.setCapability(InternetExplorerDriver.IE_ENSURE_CLEAN_SESSION, true);
+			ieOptions.merge(capability);
 			break;
 		case CHROME:
-			//capability = DesiredCapabilities.chrome();
 			chromeOptions = new ChromeOptions();
 			chromeOptions.addArguments("--start-maximized");
-			// chromeOptions.setCapability("capability_name", "capability_value");
+			chromeOptions.merge(capability);
 			break;
 		case SAFARI:
-			capability = DesiredCapabilities.safari();
+			safariOptions = new SafariOptions();
+			safariOptions.merge(capability);
 			break;
 		default:
 			throw new RuntimeException("Browser type unsupported");
 		}
-		/*capability.setBrowserName(browserType.value);
-		if(platform!=null) capability.setPlatform(platform);
-		if(version!=null) capability.setVersion(version);*/
+	}
+	
+	private RemoteWebDriver getRemoteWebDriver(String ip) throws MalformedURLException {
+		if (ip.isEmpty())
+			ip = BaseConfig.EXECUTION_GRID_HUB_URL;
+		return new RemoteWebDriver(new URL(ip), capability);
 	}
 
 	public WebDriver getWebDriver(String browser) {
@@ -139,12 +154,13 @@ public class SeleniumUtility {
 			return new EdgeDriver(edgeOptions);
 		case CHROME:
 			System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/chromedriver.exe");
+			System.setProperty("webdriver.chrome.logfile", "chromedriver.log");			
+			System.setProperty("webdriver.chrome.verboseLogging", "true");
 			return new ChromeDriver(chromeOptions);
-		case HTMLUNIT:
+		case HTMLUNIT: /* @TODO not tested */
 			return new HtmlUnitDriver(capability);
-		/*case OPERA:
-			System.setProperty("webdriver.chrome.driver", "src/test/resources/drivers/operadriver.exe");
-			return new OperaDriver(capability);*/
+		case SAFARI: /* @TODO not tested */
+			return new SafariDriver(safariOptions);
 		default:
 			throw new RuntimeException("Browser type unsupported");
 		}
@@ -228,7 +244,6 @@ public class SeleniumUtility {
 			log.debug(locator.toString() + " is present.");
 			return true;
 		} catch (NoSuchElementException e) {
-			// log.debug(e.getMessage());
 			return false;
 		}
 	}

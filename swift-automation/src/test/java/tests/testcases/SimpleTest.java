@@ -5,7 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.openxml4j.opc.PackageAccess;
@@ -29,7 +30,7 @@ import tests.dataproviders.SwiftDataProvider;
 
 public class SimpleTest extends SwiftTestRunner {
 
-	private static final Logger log = Logger.getLogger(SimpleTest.class);
+	private static final Logger log = LogManager.getLogger(SimpleTest.class);
 	public static final String SHEETNAME = "testLogin";
 
 	@Test(dataProviderClass = SwiftDataProvider.class, dataProvider = "datasheet", enabled = true, groups = { "login" })

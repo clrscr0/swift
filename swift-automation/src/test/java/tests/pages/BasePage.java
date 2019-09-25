@@ -4,7 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.OutputType;
@@ -23,7 +24,7 @@ import base.models.Run;
 
 public class BasePage {
 	protected WebDriver driver;
-	static final Logger log = Logger.getLogger(BasePage.class);
+	static final Logger log = LogManager.getLogger(BasePage.class);
 	private FluentWait<WebDriver> wait = null;
 	private JavascriptExecutor jsExecutor = null;
 

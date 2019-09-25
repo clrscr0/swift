@@ -26,7 +26,8 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -35,7 +36,7 @@ import base.constants.BaseConfig;
 
 public class Mailer {
 
-	static final Logger log = Logger.getLogger(Mailer.class);
+	static final Logger log = LogManager.getLogger(Mailer.class);
 
 	public static void sendMail(String mailTo, String subject, String body, String[] attachFiles)
 			throws AddressException, MessagingException {

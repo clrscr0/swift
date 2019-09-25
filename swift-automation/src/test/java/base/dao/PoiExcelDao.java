@@ -7,7 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import org.apache.commons.io.FilenameUtils;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -15,6 +16,7 @@ import org.apache.poi.openxml4j.opc.PackageAccess;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.DataFormatter;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.IndexedColors;
 import org.apache.poi.ss.usermodel.Row;
@@ -28,7 +30,7 @@ import base.enums.Extension;
 import base.helpers.FileHelper;
 
 public class PoiExcelDao {
-	static final Logger log = Logger.getLogger(PoiExcelDao.class);
+	static final Logger log = LogManager.getLogger(PoiExcelDao.class);
 
 	private File file = null;
 	private FileOutputStream fos = null;
@@ -66,10 +68,12 @@ public class PoiExcelDao {
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
+		} catch (InvalidFormatException e) {
+			e.printStackTrace();
 		}
 	}
 
-	private void openWorkbook() {
+	private void openWorkbook() throws InvalidFormatException {
 		try {
 			this.fis = new FileInputStream(file);
 			this.workbook = WorkbookFactory.create(fis);
@@ -77,9 +81,6 @@ public class PoiExcelDao {
 			log.debug(e.getMessage());
 			e.printStackTrace();
 		} catch (EncryptedDocumentException e) {
-			log.debug(e.getMessage());
-			e.printStackTrace();
-		} catch (InvalidFormatException e) {
 			log.debug(e.getMessage());
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -214,7 +215,7 @@ public class PoiExcelDao {
 		switch (label) {
 		case BG_YELLOW:
 			cellStyle.setFillForegroundColor(IndexedColors.YELLOW.getIndex());
-			cellStyle.setFillPattern(CellStyle.SOLID_FOREGROUND);
+			cellStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
 			break;
 		case SIMPLE:
 			font.setFontHeightInPoints((short) 11);

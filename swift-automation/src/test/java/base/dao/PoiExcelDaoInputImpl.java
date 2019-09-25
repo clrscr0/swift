@@ -39,9 +39,8 @@ public class PoiExcelDaoInputImpl extends PoiExcelDao implements BaseDao<Object[
 			rowMap.put("sheet_name", sheetName);
 
 			for (Cell cell : row) {
-				cell.setCellType(Cell.CELL_TYPE_STRING);
+				//cell.setCellType(Cell.CELL_TYPE_STRING);
 				String cellHeader = getActiveSheet().getRow(0).getCell(cell.getColumnIndex()).toString().trim();
-
 				rowMap.put(cellHeader, cell.toString());
 			}
 

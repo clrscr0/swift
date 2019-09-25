@@ -2,13 +2,14 @@ package base.models;
 
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import base.enums.Status;
 import base.helpers.DateTimeHelper;
 
 public class Suite {
-	private final Logger log = Logger.getLogger(Suite.class);
+	private final Logger log = LogManager.getLogger(Suite.class);
 	
 	private ArrayList<Test> tests;
 	private String name;

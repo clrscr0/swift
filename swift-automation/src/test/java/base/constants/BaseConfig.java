@@ -11,7 +11,8 @@ public class BaseConfig {
 	public static final String DESIGN_SCRIPTS = PropsLoader.getBaseConfigProperty("design.scripts");
 	public static final String DESIGN_LOCATORS = PropsLoader.getBaseConfigProperty("design.locators");
 	public static final String DESIGN_INPUT_API = PropsLoader.getBaseConfigProperty("design.input.api");
-	public static final boolean DESIGN_OUTPUT_RECORD = Boolean.parseBoolean(PropsLoader.getBaseConfigProperty("design.output.record"));
+	public static final boolean DESIGN_OUTPUT_RECORD = Boolean
+			.parseBoolean(PropsLoader.getBaseConfigProperty("design.output.record"));
 	public static final String DESIGN_OUTPUT_API = PropsLoader.getBaseConfigProperty("design.output.api");
 
 	// Execute properties

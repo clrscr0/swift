@@ -4,7 +4,8 @@ import static org.testng.AssertJUnit.assertTrue;
 
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.annotations.Test;
 
@@ -16,7 +17,7 @@ import tests.pages.LoginPage;
 import tests.pages.DashboardPage;
 
 public class LoginTest extends SwiftTestRunner {
-	static final Logger log = Logger.getLogger(LoginTest.class);
+	static final Logger log = LogManager.getLogger(LoginTest.class);
 	public static final String SHEETNAME = "testLogin";
 
 	@Test(dataProviderClass = SwiftDataProvider.class, dataProvider = "datasheet", enabled = true, groups = {"login"})

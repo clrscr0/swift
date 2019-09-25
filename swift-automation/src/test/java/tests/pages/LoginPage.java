@@ -1,6 +1,7 @@
 package tests.pages;
 
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -14,7 +15,7 @@ import tests.dto.User;
  * Done
  */
 public class LoginPage extends BasePage {
-	static final Logger log = Logger.getLogger(LoginPage.class);
+	static final Logger log = LogManager.getLogger(LoginPage.class);
 
 	@FindBy(how = How.ID, using = "inputEmail")
 	private WebElement userNameTextField;
