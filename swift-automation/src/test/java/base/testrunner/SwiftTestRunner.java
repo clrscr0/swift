@@ -53,7 +53,6 @@ public class SwiftTestRunner{
 	@BeforeClass
 	public void beforeClass(){
 		String className = this.getClass().getName();
-		
 		log.debug("Test: " + className);
 		test.setName(className);
 	}

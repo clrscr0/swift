@@ -94,7 +94,7 @@ public class SeleniumUtility {
 	}
 
 	public void setCapabilities(Browser browserType, Platform platform, String version) {
-		
+		capability = new DesiredCapabilities();
 		capability.setBrowserName(browserType.value);
 		if(platform!=null) capability.setPlatform(platform);
 		if(version!=null) capability.setVersion(version);

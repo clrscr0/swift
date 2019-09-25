@@ -1,6 +1,7 @@
 package base.models;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Row;
@@ -9,13 +10,13 @@ import base.enums.Status;
 import base.helpers.DateTimeHelper;
 
 public class Test {
-	private ArrayList<Step> steps;
 	private String name;
 	private Status status;
 	private String started;
 	private String ended;
 	private long duration;
-	private ArrayList<Run> runs;
+	private List<Step> steps;
+	private List<Run> runs;
 	private Row header;
 	private int numPassed = 0;
 	private int numFailed = 0;
@@ -49,7 +50,7 @@ public class Test {
 		this.runs = new ArrayList<Run>();
 	}
 	
-	public ArrayList<Step> getSteps() {
+	public List<Step> getSteps() {
 		return steps;
 	}
 	public void setSteps(ArrayList<Step> steps) {
@@ -69,7 +70,7 @@ public class Test {
 		this.duration = duration;
 	}
 	
-	public ArrayList<Run> getRuns() {
+	public List<Run> getRuns() {
 		return runs;
 	}
 	public void setRuns(ArrayList<Run> runs) {

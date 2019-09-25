@@ -1,11 +1,11 @@
 package tests.dataproviders;
 
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,7 +13,6 @@ import org.testng.ITestContext;
 import org.testng.annotations.DataProvider;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
@@ -44,19 +43,18 @@ public class SwiftDataProvider {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		String json = "json\\input.json";
+		String json = "src\\test\\resources\\design\\datasheets\\dt_regression.json";
 		
 		JsonReader reader = new JsonReader(new FileReader(json));
-		HashMap<String, String> input = new Gson().fromJson(reader, new TypeToken<HashMap<String, String>>() {
+		List<HashMap<String, String>> inputlist = new Gson().fromJson(reader, new TypeToken<ArrayList<HashMap<String, String>>>() {
 		}.getType());
-		String row = String.valueOf(Integer.parseInt(input.get("row"))+1);
-		input.put("row", row);
 		
-		try (Writer writer = new FileWriter(json)) {
-		    Gson gson = new GsonBuilder().create();
-		    gson.toJson(input, writer);
-		}		
+		System.out.println(inputlist);
 		
-		System.out.println(input);
+		Object[][] data = new Object[inputlist.size()][1];
+		
+		for (int i = 0; i < inputlist.size(); i++) {
+			data[i][0] = inputlist.get(i);
+		}
 	}
 }

@@ -39,8 +39,6 @@ public class SimpleTest extends SwiftTestRunner {
 		log.info(input);
 
 		test.getCurrentRun().set("testField2", "testFieldValue2");
-		
-		//Assert.fail();
 	}
 
 	public static void main(String[] args) throws Exception {
