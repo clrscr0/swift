@@ -1,131 +1,114 @@
 package base.testrunner;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
+import java.net.MalformedURLException;
 import java.text.ParseException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.AddressException;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.apache.log4j.Logger;
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.RemoteWebDriver;
-import org.openqa.selenium.support.PageFactory;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.AfterSuite;
 import org.testng.annotations.AfterTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
-import org.testng.asserts.SoftAssert;
 
 import base.constants.BaseConfig;
 import base.controller.Controller;
-import base.helpers.Mailer;
+import base.enums.Status;
 import base.helpers.SeleniumUtility;
-import base.models.DataSheet;
-import base.models.Status;
-import tests.pages.BasePage;
+import base.models.Test;
 
 @Listeners({ base.listeners.SwiftReporter.class })
 public class SwiftTestRunner{
-	public WebDriver driver;
-	protected SoftAssert softAssert = new SoftAssert();
-	protected SeleniumUtility seleniumUtil = new SeleniumUtility();
-	private final Logger log = LogManager.getLogger(SwiftTestRunner.class);	
-	public DataSheet datasheet;
+	private final Logger log = Logger.getLogger(SwiftTestRunner.class);
+	
+	protected WebDriver driver;
+	protected SeleniumUtility seleniumUtil = new SeleniumUtility();	
+	protected Test test = null;
+
+	@BeforeSuite
+	public void beforeSuite(ITestContext context){
+		log.info("Initializing suite...");
+		Controller.getController().startSuite();
+		log.info("Started: " + Controller.getController().getCurrentSuite().getStarted());
+		String suiteName = context.getCurrentXmlTest().getSuite().getName();
+		log.debug("Suite: " + suiteName);
+		Controller.getController().getCurrentSuite().setName(suiteName);
+	}
+	
+	@BeforeClass
+	public void beforeClass(){
+		String className = this.getClass().getName();
+		
+		log.debug("Test: " + className);
+		test.setName(className);
+	}
 	
 	@Parameters({ "browser", "ip", "platform", "version" })
-	@BeforeTest(alwaysRun = true)
-	public void init(@Optional("") String browser, @Optional("") String ip, @Optional("") String platform,
-			@Optional("") String version) throws Exception {
-		log.info("Initializing driver...");
-		log.info("Date Started: " + Controller.getStarted());
-		datasheet = new DataSheet();
-		driver = seleniumUtil.setUp(browser, ip, version, version);
+	@BeforeTest
+	public void beforeTest(@Optional("") String browser, @Optional("") String ip, @Optional("") String platform,
+			@Optional("") String version, ITestContext context) throws MalformedURLException{
+		test = Controller.getController().getCurrentSuite().startTest();
+		
+		driver = seleniumUtil.setup(browser, ip, version, version);
 		driver.manage().timeouts()
 		.implicitlyWait(BaseConfig.EXECUTION_WAIT_IN_MILLISECONDS, TimeUnit.MILLISECONDS);
 		seleniumUtil.launchBrowser(driver);
 	}
 	
-	@AfterTest(alwaysRun = true)
-	public void close() throws ParseException {
-		log.info("Closing driver...");
-		
-		seleniumUtil.tearDown(driver);
-		seleniumUtil.verifyErrors();
+	@BeforeMethod
+	public void beforeMethod(ITestContext context) throws Exception{
+		//TODO
 	}
 	
-	@BeforeMethod
-	public void beforeMethod(ITestContext context){
-		log.info("CONTEXT: " + context.getStartDate());
-	}
-
 	@AfterMethod
-	public void afterMethod(ITestResult testResult) throws IOException, IllegalArgumentException, IllegalAccessException, NoSuchFieldException, SecurityException, Exception {
+	public void afterMethod(ITestResult testResult) throws Exception{
+		String runName = testResult.getTestContext().getCurrentXmlTest().getClass().getSimpleName();
+		test.getCurrentRun().setName(runName);
+		
 		Status status = Status.get(testResult.getStatus());
-		datasheet.set("status",status.name());
+		test.getCurrentRun().set("status",status.name());
+		Controller.getController().insertRunRecord();
 		
-		//log.info("Start Start Millis: " + new Date(testResult.getStartMillis()));
-		
-		String sessionId = ((RemoteWebDriver) driver).getSessionId().toString();
-		Map<String,String> datamap = datasheet.get();
-		datamap.put("session", sessionId);
-		
-		String suiteName = testResult.getTestContext().getCurrentXmlTest().getSuite().getName();
-		log.info("Suite: " + suiteName);
-		datamap.put("suite", suiteName);
-		
-		BasePage basePage = PageFactory.initElements(driver, BasePage.class);
-		basePage.takeScreenShot(testResult);
-				
-		recordTestRun(testResult);
 	}
 
+	@AfterTest
+	public void close(ITestContext tc) throws ParseException {
+		
+		Test test = Controller.getController().getCurrentSuite().getCurrentTest();
+		
+		test.setNumFailed(tc.getFailedTests().getAllResults().size());
+		test.setNumPassed(tc.getPassedTests().getAllResults().size());
+		test.setNumSkipped(tc.getSkippedTests().getAllResults().size());
+		
+		log.debug("Passed tests for test is:" + test.getNumPassed());				
+		log.debug("Failed tests for test is:" + test.getNumFailed());
+		log.debug("Skipped tests for test is:" + test.getNumSkipped());
+		
+		
+		log.info("Closing driver...");
+		seleniumUtil.tearDown(driver);
+	}
+	
 	@AfterSuite
-	public void afterSuite() throws AddressException, MessagingException{
-		String[] attachedFiles = {""}; //zip report/regression folder
-		String mailTo = ""; //get in BaseConfig
-		String subject = ""; //get in BaseConfig
-		String body = ""; //write summary
-		Mailer.sendMail(mailTo, subject, body, attachedFiles);
-	}
-
-	private void recordTestRun(ITestResult testResult) throws Exception{
-		Object testClass = testResult.getInstance();
+	public void afterSuite(ITestContext tc) throws AddressException, MessagingException, EncryptedDocumentException, InvalidFormatException, IOException{
+		//TODO - craete a suite file execution		
 		
-		Class<?> c = testClass.getClass().getSuperclass();
-		try {
-			// get the field "h" declared in the test-class.
-			// getDeclaredField() works for protected members.
-			Field hField = c.getDeclaredField("datasheet");
-			DataSheet datasheet = (DataSheet) hField.get(testClass);
-			
-			/*TestResultDaoImpl dao = new TestResultDaoImpl();
-			dao.insert(datasheet);*/
-			Controller controller = Controller.getController();
-			controller.insertResultHistory(datasheet);
-			
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		Controller.getController().insertSuiteRecord();
+
 	}
 	
 }

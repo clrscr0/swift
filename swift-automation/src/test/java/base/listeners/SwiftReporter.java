@@ -1,78 +1,94 @@
 package base.listeners;
 
-import java.lang.reflect.Field;
+import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import javax.mail.MessagingException;
+
+import org.apache.log4j.Logger;
 import org.testng.IReporter;
 import org.testng.ISuite;
-import org.testng.ISuiteResult;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 import org.testng.xml.XmlSuite;
 
 import base.constants.BaseConfig;
-import base.models.DataSheet;
+import base.controller.Controller;
+import base.enums.Status;
+import base.helpers.FileHelper;
+import base.helpers.Mailer;
+import base.helpers.ZipUtil;
 
 public class SwiftReporter implements IReporter, ITestListener {
 
-	private final Logger log = LogManager.getLogger(SwiftReporter.class);
+	private final Logger log = Logger.getLogger(SwiftReporter.class);
 
 	@Override
 	public void generateReport(List<XmlSuite> arg0, List<ISuite> arg1, String arg2) {
-		log.info("This is where suite summary is generated.");
-		log.info("arg2: " + arg2);
+		log.debug("Generating Report...");
 
-		for (ISuite suite : arg1) {
-			
-			// Following code gets the suite name
-			String suiteName = suite.getName();
-			log.info("Results: " + suite.getResults());
-			
-			// Getting the results for the said suite
-			Map<String, ISuiteResult> suiteResults = suite.getResults();
+		if (BaseConfig.REPORT_ON_COMPLETE_SEND_EMAIL) {
 
-			for (ISuiteResult sr : suiteResults.values()) {
-				ITestContext tc = sr.getTestContext();
+			// zip file before sending
+			String sourceDirPath = BaseConfig.REPORT_RESULTS_SUMMARY_LOCATION
+					+ Controller.getController().getSuites().get(0).getStarted();
+			FileHelper.createMissingFolderRecursively(BaseConfig.DESIGN_TEMP_FOLDER);
+			String zipFilePath = BaseConfig.DESIGN_TEMP_FOLDER
+					+ Controller.getController().getSuites().get(0).getStarted() + ".zip";
+			log.debug("Path to Zip: " + sourceDirPath);
 
-				log.info("Class: " + tc.getCurrentXmlTest());
-
-				log.info("Passed tests for suite '" + suiteName + "' is:" + tc.getPassedTests().getAllResults().size());
-				log.info("Failed tests for suite '" + suiteName + "' is:" + tc.getFailedTests().getAllResults().size());
-				log.info("Skipped tests for suite '" + suiteName + "' is:"
-						+ tc.getSkippedTests().getAllResults().size());
+			try {
+				ZipUtil.pack(sourceDirPath, zipFilePath);
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
+			
+			String[] mailTo = BaseConfig.REPORT_ON_COMPLETE_SEND_TO.split(";");
+			String[] attachFiles = {zipFilePath};
+			
+			String body = "This email is automatically generated.";
+			
+			for (String email : mailTo) {
+				try {
+					Mailer.sendMail(email.trim(), BaseConfig.REPORT_ON_COMPLETE_SUBJECT, body, attachFiles);
+				} catch (MessagingException e) {
+					e.printStackTrace();
+				}
+			}
+			
+
 		}
 
 	}
 
 	@Override
-	public void onFinish(ITestContext arg0) {
-		log.info("onFinish...");
+	public void onFinish(ITestContext context) {
+		log.debug("On Finish");
 	}
 
 	@Override
-	public void onStart(ITestContext arg0) {
-		log.info("onStart...");
-		String suiteName = arg0.getCurrentXmlTest().getSuite().getName();
-		log.info("Suite: " + suiteName);
+	public void onStart(ITestContext context) {
+		log.debug("On Start");
 	}
 
 	@Override
-	public void onTestFailedButWithinSuccessPercentage(ITestResult arg0) {
-		log.info("onTestFailedButWithinSuccessPercentage...");
-		displayDatasheet(arg0.getInstance());
+	public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
+		log.debug("On Test Failure But Within Success Percentage");
 	}
 
 	@Override
 	public void onTestFailure(ITestResult arg0) {
-		log.info("onTestFailure...");
-		
-		displayDatasheet(arg0.getInstance());
+		log.debug("On Test Failure");
 
+		Controller.getController().getCurrentSuite().setStatus(Status.FAILED);
+		Controller.getController().getCurrentSuite().getCurrentTest().setStatus(Status.FAILED);
+		Controller.getController().getCurrentSuite().getCurrentTest().getCurrentRun().setStatus(Status.FAILED);
+		Controller.getController().getCurrentSuite().getCurrentTest().getCurrentRun()
+				.setError(arg0.getThrowable().toString());
+
+		log.debug("Error:" + arg0.getThrowable());
+		
 		if (BaseConfig.REPORT_SCREENSHOTS_CAPTURE_ON_FAIL) {
 
 		}
@@ -80,46 +96,24 @@ public class SwiftReporter implements IReporter, ITestListener {
 
 	@Override
 	public void onTestSkipped(ITestResult arg0) {
-		log.info("onTestSkipped...");
+		log.debug("On Test Skipped");
 
-	}
-
-	@Override
-	public void onTestStart(ITestResult arg0) {
-		log.info("onTestStart...");
-	}
-
-	@Override
-	public void onTestSuccess(ITestResult arg0) {
-		log.info("onTestSuccess...");
-	}
-
-	public void displayDatasheet(Object testClass) {
-
-		Class<?> c = testClass.getClass().getSuperclass();
-		try {
-			// get the field "h" declared in the test-class.
-			// getDeclaredField() works for protected members.
-			Field hField = c.getDeclaredField("datasheet");
-
-			// get the name and class of the field h.
-			DataSheet datasheet = (DataSheet) hField.get(testClass);
-			log.info("data: " + datasheet.get());
-
-		} catch (NoSuchFieldException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SecurityException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if (Controller.getController().getCurrentSuite().getStatus() != Status.FAILED) {
+			Controller.getController().getCurrentSuite().setStatus(Status.SKIPPED);
+			Controller.getController().getCurrentSuite().getCurrentTest().setStatus(Status.SKIPPED);
 		}
+		Controller.getController().getCurrentSuite().getCurrentTest().getCurrentRun().setStatus(Status.SKIPPED);
 
+	}
+
+	@Override
+	public void onTestStart(ITestResult result) {
+		log.debug("On Test Start");
+	}
+
+	@Override
+	public void onTestSuccess(ITestResult result) {
+		log.debug("On Test Success");
 	}
 
 }

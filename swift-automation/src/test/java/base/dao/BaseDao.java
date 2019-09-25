@@ -1,7 +1,7 @@
 package base.dao;
 
 public interface BaseDao<T> {
-	T get(int id);
+	T get(String id);
 
 	int insert(T type);
 

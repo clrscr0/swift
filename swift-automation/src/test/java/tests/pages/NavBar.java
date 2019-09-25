@@ -8,14 +8,7 @@ import org.openqa.selenium.support.PageFactory;
 
 public class NavBar extends BasePage {
 	
-	/* Web Elements */
-	@FindBy(how = How.XPATH, using = "//a[@href='quote.asp']")
-	private WebElement quoteMenu;
-	
-	@FindBy(how = How.LINK_TEXT, using = "market.asp")
-	private WebElement marketNewsMenu;
-	
-	@FindBy(how = How.XPATH, using = "//a[@href='logout.asp']")
+	@FindBy(how = How.LINK_TEXT, using = "Sign out")
 	private WebElement logoutMenu;
 
 	public NavBar(WebDriver driver){
@@ -26,16 +19,6 @@ public class NavBar extends BasePage {
 	public LoginPage clickLogout() {
 		logoutMenu.click();
 		return PageFactory.initElements(driver, LoginPage.class);
-	}
-	
-	public MarketNewsPage clickMarketNews() {
-		marketNewsMenu.click();
-		return PageFactory.initElements(driver, MarketNewsPage.class);
-	}
-	
-	public QuotePage clickQuote() {
-		quoteMenu.click();		
-		return PageFactory.initElements(driver, QuotePage.class);
 	}
 
 }
