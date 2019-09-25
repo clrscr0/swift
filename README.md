@@ -1,10 +1,8 @@
 # Selenium WebDriver Integrated Framework for Test Automation
 
-Releases: 
-0.1-ALPHA
-
-Build: 
-0.120190926
+| Release |
+| :--- |
+| 0.1-ALPHA |
 
 ### This framework uses:
 * Selenium 3
