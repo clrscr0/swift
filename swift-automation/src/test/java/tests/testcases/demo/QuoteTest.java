@@ -1,4 +1,4 @@
-package tests.testcases;
+package tests.testcases.demo;
 
 import java.util.Map;
 

@@ -26,37 +26,31 @@ public class SwiftReporter implements IReporter, ITestListener {
 		log.info("This is where suite summary is generated.");
 		log.info("arg2: " + arg2);
 
-		// TODO Auto-generated method stub
 		for (ISuite suite : arg1) {
+			
 			// Following code gets the suite name
 			String suiteName = suite.getName();
 			log.info("Results: " + suite.getResults());
-			// System.out.println(suite.getXmlSuite().toXml());
+			
 			// Getting the results for the said suite
 			Map<String, ISuiteResult> suiteResults = suite.getResults();
 
 			for (ISuiteResult sr : suiteResults.values()) {
 				ITestContext tc = sr.getTestContext();
-				
+
 				log.info("Class: " + tc.getCurrentXmlTest());
-				
-				System.out.println(
-						"Passed tests for suite '" + suiteName + "' is:" + tc.getPassedTests().getAllResults().size());				
-				System.out.println(
-						"Failed tests for suite '" + suiteName + "' is:" + tc.getFailedTests().getAllResults().size());
-				System.out.println("Skipped tests for suite '" + suiteName + "' is:"
+
+				log.info("Passed tests for suite '" + suiteName + "' is:" + tc.getPassedTests().getAllResults().size());
+				log.info("Failed tests for suite '" + suiteName + "' is:" + tc.getFailedTests().getAllResults().size());
+				log.info("Skipped tests for suite '" + suiteName + "' is:"
 						+ tc.getSkippedTests().getAllResults().size());
 			}
 		}
 
-		/*for (XmlSuite xml : arg0) {
-			log.info(xml.toXml());
-		}*/
 	}
 
 	@Override
 	public void onFinish(ITestContext arg0) {
-		// TODO Auto-generated method stub
 		log.info("onFinish...");
 	}
 
@@ -69,15 +63,14 @@ public class SwiftReporter implements IReporter, ITestListener {
 
 	@Override
 	public void onTestFailedButWithinSuccessPercentage(ITestResult arg0) {
-		// TODO Auto-generated method stub
 		log.info("onTestFailedButWithinSuccessPercentage...");
 		displayDatasheet(arg0.getInstance());
 	}
 
 	@Override
 	public void onTestFailure(ITestResult arg0) {
-		// TODO Auto-generated method stub
 		log.info("onTestFailure...");
+		
 		displayDatasheet(arg0.getInstance());
 
 		if (BaseConfig.REPORT_SCREENSHOTS_CAPTURE_ON_FAIL) {
@@ -87,7 +80,6 @@ public class SwiftReporter implements IReporter, ITestListener {
 
 	@Override
 	public void onTestSkipped(ITestResult arg0) {
-		// TODO Auto-generated method stub
 		log.info("onTestSkipped...");
 
 	}
@@ -99,13 +91,10 @@ public class SwiftReporter implements IReporter, ITestListener {
 
 	@Override
 	public void onTestSuccess(ITestResult arg0) {
-		// TODO Auto-generated method stub
 		log.info("onTestSuccess...");
-		// displayDatasheet(arg0.getInstance());
 	}
 
 	public void displayDatasheet(Object testClass) {
-		// TODO Auto-generated method stub
 
 		Class<?> c = testClass.getClass().getSuperclass();
 		try {
@@ -114,12 +103,7 @@ public class SwiftReporter implements IReporter, ITestListener {
 			Field hField = c.getDeclaredField("datasheet");
 
 			// get the name and class of the field h.
-			// (this is just for fun)
-			//String name = hField.getName();
 			DataSheet datasheet = (DataSheet) hField.get(testClass);
-			// System.out.print(name + ":" + thisHelperInstance.toString() +
-			// "\n");
-
 			log.info("data: " + datasheet.get());
 
 		} catch (NoSuchFieldException e) {
