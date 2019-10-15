@@ -1,11 +1,8 @@
 package tests.dataproviders;
 
 import java.io.FileReader;
-import java.io.IOException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -40,21 +37,5 @@ public class SwiftDataProvider {
 		}.getType());
 		Object[][] data = { { input } };
 		return data;
-	}
-	
-	public static void main(String[] args) throws IOException {
-		String json = "src\\test\\resources\\design\\datasheets\\dt_regression.json";
-		
-		JsonReader reader = new JsonReader(new FileReader(json));
-		List<HashMap<String, String>> inputlist = new Gson().fromJson(reader, new TypeToken<ArrayList<HashMap<String, String>>>() {
-		}.getType());
-		
-		System.out.println(inputlist);
-		
-		Object[][] data = new Object[inputlist.size()][1];
-		
-		for (int i = 0; i < inputlist.size(); i++) {
-			data[i][0] = inputlist.get(i);
-		}
 	}
 }
