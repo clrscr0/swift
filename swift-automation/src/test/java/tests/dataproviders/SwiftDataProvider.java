@@ -13,6 +13,8 @@ import org.testng.ITestContext;
 import org.testng.annotations.DataProvider;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
@@ -32,7 +34,7 @@ public class SwiftDataProvider {
 		return Controller.getController().getInput(SHEETNAME);
 	}
 	 
-	@DataProvider(name = "demo-datasheet")
+	@DataProvider(name = "json-data")
 	public static Object[][] getJsonData() throws Exception {
 		JsonReader reader = new JsonReader(new FileReader("json\\input.json"));
 
@@ -42,11 +44,27 @@ public class SwiftDataProvider {
 		return data;
 	}
 	
+	
+	@DataProvider(name = "json-string")
+	public static Object[][] getJsonStringData() throws Exception {
+		String json = "[{\"Success\":true,\"Message\":\"Invalid access token.\"}]";
+		JsonParser parser = new JsonParser();
+		JsonArray array = (JsonArray) parser.parse(json);
+		HashMap<String, String> input = new Gson().fromJson(array, new TypeToken<HashMap<String, String>>() {
+		}.getType());
+		Object[][] data = { { input } };
+		return data;
+	}
+	
 	public static void main(String[] args) throws IOException {
-		String json = "src\\test\\resources\\design\\datasheets\\dt_regression.json";
+		//String json = "src\\test\\resources\\design\\datasheets\\dt_regression.json";
 		
-		JsonReader reader = new JsonReader(new FileReader(json));
-		List<HashMap<String, String>> inputlist = new Gson().fromJson(reader, new TypeToken<ArrayList<HashMap<String, String>>>() {
+		//JsonReader reader = new JsonReader(new FileReader(json));
+		String json = "[{\"Success\":true,\"Message\":\"Invalid access token.\"}]";
+		JsonParser parser = new JsonParser();
+		JsonArray array = (JsonArray) parser.parse(json);
+		
+		List<HashMap<String, String>> inputlist = new Gson().fromJson(array, new TypeToken<ArrayList<HashMap<String, String>>>() {
 		}.getType());
 		
 		System.out.println(inputlist);
