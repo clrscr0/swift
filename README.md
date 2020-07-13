@@ -1,4 +1,8 @@
-# Selenium WebDriver Integrated Framework for Test Automation
+# Selenium WebDriver Integrated Framework and Tools
+
+| Release |
+| :--- |
+| 0.2-ALPHA |
 
 ### This framework uses:
 * Selenium 3
@@ -34,11 +38,11 @@ Please follow below guide after importing the project in Eclipse.
 ### Execution fails on Internet Explorer
 * Make sure Internet Explorer is zoomed at 100%
 * Check that that setting is the same for Enable Protected Mode in all types of security settings zone:
-1. Click on gear icon (upper-right) of Internet Explorer
-2. Click on Internet options
-3. Select Security tab
-4. Mark Enable Protected Mode checkbox in all zones (make sure setting for said checkbox is the same)
-5. Save all changes and close Internet options window then restart Internet Explorer.
+  1. Click on gear icon (upper-right) of Internet Explorer
+  2. Click on Internet options
+  3. Select Security tab
+  4. Mark Enable Protected Mode checkbox in all zones (make sure setting for said checkbox is the same)
+  5. Save all changes and close Internet options window then restart Internet Explorer.
 
 ### Execution fails on Firefox
 1. Click on firefox burger icon (upper right)
