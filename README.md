@@ -1,9 +1,5 @@
 # Selenium WebDriver Integrated Framework and Tools
 
-| Release |
-| :--- |
-| 0.1-ALPHA |
-
 ### This framework uses:
 * Selenium 3
 * JDK

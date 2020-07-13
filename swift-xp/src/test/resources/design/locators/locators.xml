@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<application>
+	<name>Mercury Tours</name>
+	<className>MercuryTours</className>
+	<pages>
+		<page type="Page" technology="Web">
+			<name>Welcome: Mercury Tours</name>
+			<codeName>WelcomeMercuryToursPage</codeName>
+			<identification></identification>
+			<objects>
+				<object type="EditField" technology="Web">
+					<name>userEditFld</name>
+					<codeName>UserNameEditField</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">userName
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="EditField" technology="Web">
+					<name>passwordEditFld</name>
+					<codeName>PasswordEditField</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">password
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="Image" technology="Web">
+					<name>signInBtn</name>
+					<codeName>SignInImage</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="alt" type="string" isRegExp="false">Sign-In
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+			</objects>
+		</page>
+		<page type="Page" technology="Web">
+			<name>Find a Flight: Mercury Tours</name>
+			<codeName>FindaFlightMercuryToursPage</codeName>
+			<identification></identification>
+			<objects>
+				<object type="RadioGroup" technology="Web">
+					<name>tripType</name>
+					<codeName>TripTypeRadioGroup</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">tripType
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="ListBox" technology="Web">
+					<name>passCount</name>
+					<codeName>PassCountListBox</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">passCount
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="ListBox" technology="Web">
+					<name>fromPort</name>
+					<codeName>FromPortListBox</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">fromPort
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="ListBox" technology="Web">
+					<name>fromMonth</name>
+					<codeName>FromMonthListBox</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">fromMonth
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="ListBox" technology="Web">
+					<name>fromDay</name>
+					<codeName>FromDayListBox</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">fromDay
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="ListBox" technology="Web">
+					<name>toPort</name>
+					<codeName>ToPortListBox</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">toPort
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="ListBox" technology="Web">
+					<name>toMonth</name>
+					<codeName>ToMonthListBox</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">toMonth
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="ListBox" technology="Web">
+					<name>toDay</name>
+					<codeName>ToDayListBox</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">toDay
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="RadioGroup" technology="Web">
+					<name>servClass</name>
+					<codeName>ServClassRadioGroup</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">servClass
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="ListBox" technology="Web">
+					<name>airline</name>
+					<codeName>AirlineListBox</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">airline
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+				<object type="Image" technology="Web">
+					<name>findFlights</name>
+					<codeName>FindFlightsImage</codeName>
+					<identification>
+						<properties>
+							<property name="Attributes" type="dictionary" isRegExp="false">
+								<property name="name" type="string" isRegExp="false">findFlights
+								</property>
+							</property>
+						</properties>
+					</identification>
+				</object>
+			</objects>
+		</page>
+	</pages>
+</application>

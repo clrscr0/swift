@@ -1,0 +1,16 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Demo">
+	<test name="Demo Test">
+		<parameter name="browser" value="chrome" />
+		<classes>
+			<class name="tests.testcases.DemoTest" />
+		</classes>
+	</test>
+	<test name="Another Demo Test">
+		<parameter name="browser" value="chrome" />
+		<classes>
+			<class name="tests.testcases.AnotherDemoTest" />
+		</classes>
+	</test>
+</suite>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Context PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<Context>
+	<Resource auth="Container" description="DB Connection"
+		name="jdbc/DBNAME"
+		type="javax.sql.DataSource"
+		password="PASSWORD"
+		driverClassName="com.mysql.jdbc.Driver"
+		maxIdle="2"
+		maxWait="5000"
+		validationQuery="select * from TABLENAME"
+		username="USERNAME"
+		url="jdbc:mysql://localhost:3306/DBNAME"
+	maxActive="4"/>
+</Context>
