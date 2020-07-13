@@ -1,4 +1,4 @@
-# Selenium WebDriver Integrated Framework for Test Automation
+# Selenium WebDriver Integrated Framework and Tools
 
 | Release |
 | :--- |

@@ -1,0 +1,10 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<suite name="Multiple Suites" parallel="false" thread-count="2">
+
+	<suite-files>
+		<suite-file path="testng-suites/test.xml" />
+		<suite-file path="testng-suites/regression.xml" />
+	</suite-files>
+
+</suite>
