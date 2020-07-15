@@ -5,7 +5,7 @@
 * JDK
 * Maven
 * Cucumber
-* JUnit
+* JUnit / TestNG
 
 Please follow below guide after importing the project in Eclipse.
 
